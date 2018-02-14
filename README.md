@@ -1,6 +1,6 @@
 # Image_encrypter
 
-`brew install crystal`
+`brew install crystal-lang`
 
 `crystal run image_encrypter.cr`
 
