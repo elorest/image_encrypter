@@ -1,9 +1,19 @@
 require "openssl/cipher"
 
-superman = File.read("superman.bmp").to_slice
+filename = ARGV[0]?
 
-headers = superman[0, 54]
-data = superman[54, superman.size - 54]
+unless filename 
+  puts "please enter base filename" 
+  puts "crystal image_encrypter.cr superman.bmp"
+  exit 1
+end
+
+filename = filename.split(".").first
+
+basefile = File.read("#{filename}.bmp").to_slice
+
+headers = basefile[0, 54]
+data = basefile[54, basefile.size - 54]
 
 def simple_enc(data : Bytes, secret : Bytes) : Bytes
   data.map_with_index{|b, i| b ^ secret[i%secret.size]}
@@ -21,17 +31,22 @@ def encrypt(value : Bytes, alg = "aes-256-cbc", secret = "much_password") : Byte
   encrypted_data.to_slice
 end
 
-File.open("superman_simple.bmp", "w") do |f|
+File.open("#{filename}_simple.bmp", "w") do |f|
   f.write headers
   f.write simple_enc(data, "much password so secret".to_slice)
 end
 
-File.open("superman_ecb.bmp", "w") do |f|
+File.open("#{filename}_ecb.bmp", "w") do |f|
   f.write headers
   f.write encrypt(data, "aes-256-ecb", "much password so secret")
 end
 
-File.open("superman_ctr.bmp", "w") do |f|
+File.open("#{filename}_cbc.bmp", "w") do |f|
+  f.write headers
+  f.write encrypt(data, "aes-256-cbc", "much password so secret")
+end
+
+File.open("#{filename}_ctr.bmp", "w") do |f|
   f.write headers
   f.write encrypt(data, "aes-256-ctr", "much password so secret")
 end
