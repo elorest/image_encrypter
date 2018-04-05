@@ -1,14 +1,16 @@
 require "openssl/cipher"
+require "random"
+Random::Secure.random_bytes
 
-filename = ARGV[0]?
+rawfn = ARGV[0]?
 
-unless filename 
+unless rawfn 
   puts "please enter base filename" 
   puts "crystal image_encrypter.cr superman.bmp"
   exit 1
 end
 
-filename = filename.split(".").first
+filename = rawfn.split(".").first
 
 basefile = File.read("#{filename}.bmp").to_slice
 
