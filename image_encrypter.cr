@@ -1,6 +1,6 @@
 require "openssl/cipher"
 require "random"
-Random::Secure.random_bytes
+# Random::Secure.random_bytes
 
 rawfn = ARGV[0]?
 
@@ -33,9 +33,16 @@ def encrypt(value : Bytes, alg = "aes-256-cbc", secret = "much_password") : Byte
   encrypted_data.to_slice
 end
 
+enc_data = simple_enc(data, "much password so secret".to_slice)
+
 File.open("#{filename}_simple.bmp", "w") do |f|
   f.write headers
-  f.write simple_enc(data, "much password so secret".to_slice)
+  f.write(enc_data)
+end
+
+File.open("#{filename}_simpleunen.bmp", "w") do |f|
+  f.write headers
+  f.write simple_enc(enc_data, "much password so secret".to_slice)
 end
 
 File.open("#{filename}_ecb.bmp", "w") do |f|
@@ -51,4 +58,10 @@ end
 File.open("#{filename}_ctr.bmp", "w") do |f|
   f.write headers
   f.write encrypt(data, "aes-256-ctr", "much password so secret")
+end
+
+
+File.open("#{filename}_gcm.bmp", "w") do |f|
+  f.write headers
+  f.write encrypt(data, "aes-256-gcm", "much password so secret")
 end
