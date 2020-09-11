@@ -1,4 +1,9 @@
-# Image_encrypter
+Helping humans visualize encryption strength!
+-------
+
+
+
+### Image Encrypter
 
 `brew install crystal-lang`
 
